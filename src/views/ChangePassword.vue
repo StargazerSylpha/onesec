@@ -67,6 +67,7 @@ import store from "../store";
 
 export default {
     name: "ChangePassword",
+    store,
     data: function () {
         return {
             changePwdForm: {
@@ -81,15 +82,15 @@ export default {
             changePwdFormRules: {
                 oldPwd: [
                     {required: true,  message: '请输入旧密码', trigger: 'blur'},
-                    {min: 8, max: 10, message: '旧密码应当为8~20位字母、数字及常用符号'}
+                    {min: 8, max: 20, message: '旧密码应当为8~20位字母、数字及常用符号'}
                 ],
                 newPwd: [
                     {required: true,  message: '请输入新密码', trigger: 'blur'},
-                    {min: 8, max: 10, message: '新密码应当为8~20位字母、数字及常用符号'}
+                    {min: 8, max: 20, message: '新密码应当为8~20位字母、数字及常用符号'}
                 ],
                 reNewPwd: [
                     {required: true, message: '请再次输入新密码', trigger: 'blur'},
-                    {min: 8, max: 10, message: '新密码应当为8~20位字母、数字及常用符号'}
+                    {min: 8, max: 20, message: '新密码应当为8~20位字母、数字及常用符号'}
                 ],
             },
         }
@@ -97,10 +98,37 @@ export default {
     },
     mounted: function () {
         document.title = '修改密码' + ' - ' + store.state.pageTitle;
+        let authData = "accessToken=" + localStorage.getItem("accessToken");
+        axios.post(store.state.apiUrl + "/api/user/getUserInfo",authData).then(response => {
+            if(response.status === 200 && response.data.errcode === 0) {
+                //...
+            } else if(response.data.errcode === 1001) {
+                this.autoLogout();
+            } else {
+                this.$message({
+                    type: "error",
+                    message: "[" + response.data.errcode + "]" + response.data.msg,
+                });
+            }
+        });
     },
     methods: {
+        autoLogout: function (type,msg) {
+            authLogout();
+            if(typeof type === "undefined" || typeof msg === "undefined") {
+                this.$message({
+                    type:"error",
+                    message:"登录状态已过期，请重新登录！",
+                });
+            } else {
+                this.$message({
+                    type:type,
+                    message:msg,
+                });
+            }
+            this.$router.push("/auth/login");
+        },
         changePassword: function () {
-
             this.submitBtn.loading = true;
             let oldPwd = this.changePwdForm.oldPwd;
             let newPwd = this.changePwdForm.newPwd ;
@@ -119,8 +147,28 @@ export default {
                     type: 'error',
                 });
                 this.submitBtn.loading = false;
+            } else if(newPwd === oldPwd) {
+                this.$message({
+                    message: '新密码与旧密码不可以相同！',
+                    type: 'error',
+                });
+                this.submitBtn.loading = false;
             } else {
-                //...
+                let postData = "accessToken=" + localStorage.getItem("accessToken") +
+                                "&oldpassword=" + oldPwd + "&newpassword=" + newPwd;
+                axios.post(store.state.apiUrl + "/api/user/changePassword",postData).then(response => {
+                    if(response.status === 200 && response.data.errcode === 0) {
+                        this.autoLogout("success","密码修改成功！请重新登录");
+                    } else if(response.data.errcode === 1001) {
+                        this.autoLogout();
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "[" + response.data.errcode + "]" + response.data.msg,
+                        });
+                        this.submitBtn.loading = false;
+                    }
+                });
             }
         },
     },

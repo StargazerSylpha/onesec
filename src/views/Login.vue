@@ -19,7 +19,8 @@
                             <el-form-item prop="password"><el-input placeholder="密码" v-model="loginForm.password" maxlength="20" minlength="8" prefix-icon="el-icon-lock" show-password clearable></el-input></el-form-item>
                         </div>
                         <div id="login-btn-area" style="margin-top: 20px;">
-                            <el-form-item><el-button type="primary" icon="el-icon-s-promotion" class="btn-width" :loading="loginBtnLoading" @click="doLogin">登 录</el-button></el-form-item>
+                            <el-form-item><el-button type="primary" icon="el-icon-s-promotion"
+                                                     class="btn-width" :loading="loginBtnLoading" @click="doLogin">登 录</el-button></el-form-item>
                         </div>
 
                     </el-form>
@@ -42,8 +43,12 @@
 
 import store from "../store";
 
+/**
+ * 加功能：在url上添加返回页urlencode地址，定向跳转
+ */
 export default {
     name: "Login",
+    store,
     data: function () {
         return {
             loginForm: {
@@ -66,6 +71,7 @@ export default {
     },
     mounted: function () {
         document.title = '登录' + ' - ' + store.state.pageTitle;
+
     },
     methods: {
 
@@ -79,8 +85,58 @@ export default {
             this.$router.push('register');
         },
         doLogin() {
+
             this.loginBtnLoading = true;
-            this.$router.push('/account/changeInfo');
+
+            if(this.loginForm.username.length >= 6 && this.loginForm.username.length <= 20 &&
+                this.loginForm.password.length >= 8 && this.loginForm.password.length <= 20) {
+                let loginData = "username=" + this.loginForm.username + "&password=" + this.loginForm.password;
+                axios.post(store.state.apiUrl + "/api/auth/login",loginData).then(response =>  {
+                    if(response.status === 200 & response.data.errcode === 0) {
+                        /**
+                         * 设置localstorage，方便account.vue等组件读取展示用户信息
+                         * @type {string}
+                         */
+                        let userInfo = JSON.stringify({
+                            "uid": response.data.uid,
+                            "username": response.data.username,
+                        });
+                        localStorage.setItem("userInfo", userInfo);
+                        localStorage.setItem("accessToken",response.data.accessToken);
+                        this.$message({
+                            type:"success",
+                            message:"登录成功！"
+                        });
+                        if(typeof (this.$route.query.redirectUrl) === "undefined" || this.$route.query.redirectUrl.length < 8) {
+                            this.$router.push("/account");
+                        } else {
+                            window.location = decodeURIComponent(this.$route.query.redirectUrl);
+                        }
+
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "[" + response.data.errcode + "]" + response.data.msg,
+                        });
+                        localStorage.removeItem("userInfo");
+                        localStorage.removeItem("accessToken");
+                        this.loginBtnLoading = false;
+                    }
+
+                });
+
+
+            } else {
+                this.$message({
+                   message: "请将账号与密码填写完整！",
+                   type: "error",
+                });
+                localStorage.removeItem("userInfo");
+                localStorage.removeItem("accessToken");
+                this.loginBtnLoading = false;
+            }
+
+
         }
 
     },

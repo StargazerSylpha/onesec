@@ -8,6 +8,9 @@ import ChangeInfo from "../views/ChangeInfo";
 import ChangePassword from "../views/ChangePassword";
 import News from "../views/News";
 import NewsHome from "../views/NewsHome";
+import NewsCategory from "../views/NewsCategory";
+import NewsSearch from "../views/NewsSearch";
+import NewsDetail from "../views/NewsDetail";
 
 Vue.use(VueRouter)
 
@@ -32,6 +35,8 @@ const routes = [
         name: 'register',
         component: Register,
       },
+
+        //懒加载不要加大括号！不会显示！
     ],
   },
   {
@@ -62,6 +67,21 @@ const routes = [
         path: 'home',
         name: 'newsHome',
         component: NewsHome,
+      },
+      {
+        path: 'category/:categoryId',
+        name: 'newsCategory',
+        component: NewsCategory,
+      },
+      {
+        path: 'search',
+        name: 'newsSearch',
+        component: NewsSearch,
+      },
+      {
+        path: 'detail/:articleId',
+        name: 'newsDetail',
+        component: NewsDetail
       },
     ],
 

@@ -76,20 +76,65 @@
     align-items: center;    /*弹性flex 布局*/
 }
 
+/**
+ * 顶部栏左侧 #Project ONESEC标题的样式
+ */
 .header-title {
     color: #606266;
     font-size: 25px;
     margin-left: 30px;
 }
+.header-subtitle {
+    margin-left: 10px;
+    font-size: 15px;
+    color: #606266;
+}
 
+
+/*account、news底部版权样式*/
 .container-copyright {
     color: #999999;
     font-size: 13px;
     text-align: center;
 }
 
+/*左侧蓝色小段柱 标题样式*/
 .function-title {
     font-size: 20px;
     color: #606266;
-    border-left: 10px solid #409eff;
+    border-left: 5px solid #409eff;
 }
+
+/*欢迎，username的文字样式*/
+
+.container-username {
+    color: #606266;
+    font-size: 15px;
+}
+
+
+/**
+ * news相关vue组件样式
+ */
+
+.news-home-right-compo {
+    padding: 10px;
+    border-top: solid #409eff 5px;
+    background-color: white;
+    margin-top: 15px;
+}
+/*中部区域宽*/
+.news-home-mid-col {
+    width: 750px;
+}
+
+.news-home-right-col {
+    margin-left: 20px;
+    width: 290px;
+}
+/*中部主要内容块 背景颜色*/
+.news-home-mid {
+    background-color: white;
+}
+
+/*新闻detail及item组件 link hover样式*/

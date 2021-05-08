@@ -2,15 +2,15 @@
     <div id="account-container">
         <el-container>
             <el-header id="acc-header">
-                <div id="acc-title">{{pjtitle}}</div>
+                <div id="acc-title" class="header-title">{{pjtitle}}</div>
 
 
-                <div id="acc-homebtn">
+                <div id="acc-homebtn" class="header-subtitle">
                     <span>账户中心 <i class="el-icon-s-home"></i> <el-link type="primary" @click="backHome">回到首页</el-link></span>
                 </div>
 
                 <div id="acc-user">
-                    <span id="acc-username">欢迎，<i class="el-icon-user"></i> {{userInfo.userName}}</span>
+                    <span id="acc-username" class="container-username">欢迎，<i class="el-icon-user"></i> {{userInfo.userName}}</span>
                     <el-link type="primary" @click="logout" style="margin-left: 10px;">登出</el-link>
                 </div>
             </el-header>
@@ -51,7 +51,7 @@
             </el-main>
 
             <el-footer>
-                <div id="acc-copyright">
+                <div class="container-copyright">
                     <span>Copyright &copy; 2021 Project ONESEC / Sylpha Project Co., Ltd. All Rights Reserved.</span>
                 </div>
             </el-footer>
@@ -63,6 +63,7 @@
 
 <script>
 import store from '../store';
+
 export default {
     name: "Account",
     store,
@@ -71,7 +72,7 @@ export default {
             pjtitle: store.state.pjtitle,
             menuOpen:['user','comment'],
             userInfo: {
-              userName: 'admin',
+              userName: '',
             },
 
             accNaviActive: '',
@@ -90,15 +91,35 @@ export default {
             this.naviWidth = '';
         }
 
+        this.userInfo.userName = (typeof (JSON.parse(localStorage.getItem("userInfo")).username) === 'undefined')?
+            (""): (JSON.parse(localStorage.getItem("userInfo")).username) ;
+
+
+
+
+
     },
     methods: {
         backHome: function () {
             this.$router.push('/news');
         },
         logout: function () {
-            //this.$router.push('/auth/logout');
-            alert(this.accNaviActive)
+            this.$confirm("确认登出吗？","登出",{
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+            }).then(() => {
+                authLogout();
+                this.$message({
+                    type:"success",
+                    message:"登出成功！",
+                });
+                this.$router.push("/auth/login");
+
+            });
+
         },
+
 
     },
     computed: {
@@ -140,12 +161,6 @@ export default {
 
 
     }
-    #acc-title {
-        color: #606266;
-        font-size: 25px;
-        margin-left: 30px;
-
-    }
 
 
     .el-main {
@@ -179,31 +194,11 @@ export default {
         /*margin-top: 20px;*/
     }
 
-    #acc-copyright {
-        color: #999999;
-        font-size: 13px;
-        text-align: center;
-
-
-    }
-
-    #acc-username {
-        color: #606266;
-        font-size: 15px;
-
-    }
-
-
     #acc-user {
         position: absolute;
         right: 40px;
     }
 
-    #acc-homebtn {
-        margin-left: 10px;
-        font-size: 15px;
-        color: #606266;
-    }
 
     .el-menu-item.is-disabled {
         background-color: #eaeaea;

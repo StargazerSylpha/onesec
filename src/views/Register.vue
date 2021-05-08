@@ -11,7 +11,7 @@
         <div id="register-form">
             <el-tabs value="pwdreg">
                 <el-tab-pane label="用户名注册" name="pwdreg">
-                    <el-form :model="regForm" :rules="regFormRules">
+                    <el-form :model="regForm" :rules="regFormRules" ref="regForm">
                         <div id="username">
                             <el-form-item prop="username">
                                 <el-input placeholder="用户名（6~20位字母、数字，不可修改）" maxlength="20" minlength="6" prefix-icon="el-icon-user" v-model="regForm.username" clearable></el-input>
@@ -36,7 +36,7 @@
 
                         <div id="reg-btn-area" style="margin-top: 20px;">
                             <el-form-item>
-                                <el-button type="primary" icon="el-icon-s-promotion" class="btn-width" @click="doReg">注 册</el-button>
+                                <el-button type="primary" icon="el-icon-s-promotion" class="btn-width" :loading="regBtnLoading" @click="doReg">注 册</el-button>
                             </el-form-item>
 
                         </div>
@@ -57,6 +57,7 @@ import store from "../store";
 
 export default {
     name: "Register",
+    store,
     data() {
         return {
             regForm: {
@@ -83,6 +84,7 @@ export default {
                     {min: 8, max: 20, message: '密码应当为8~20位字母、数字及常用符号'}
                 ],
             },
+            regBtnLoading: false,
 
         }
     },
@@ -91,7 +93,39 @@ export default {
             this.$router.push('login');
         },
         doReg() {
-            //...
+            this.regBtnLoading = true;
+            this.$refs['regForm'].validate((result) => {
+                if(result) {
+                    if(this.regForm.password !== this.regForm.repassword) {
+                        this.$message({
+                            type: "error" ,
+                            message :"两次输入的密码不一致！"
+                        });
+                        this.regBtnLoading = false;
+                    } else {
+                        let postData = "username=" + this.regForm.username
+                            + "&password=" + this.regForm.password
+                            + "&email=" + this.regForm.email;
+                        axios.post(store.state.apiUrl + "/api/auth/register",postData).then(response => {
+                            if(response.status === 200 && response.data.errcode === 0) {
+                                this.$message({
+                                    type: "success",
+                                    message: "注册成功！正在转向登录页..."
+                                });
+                                localStorage.removeItem("userInfo");
+                                localStorage.removeItem("accessToken");
+                                this.$router.push("login");
+                            } else {
+                                this.$message({
+                                    type: "error",
+                                    message: "[" + response.data.errcode + "]" + response.data.msg,
+                                });
+                                this.regBtnLoading = false;
+                            }
+                        })
+                    }
+                }
+            })
         },
     },
     mounted: function () {

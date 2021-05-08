@@ -2,7 +2,7 @@
 
     <div id="auth-content">
         <div id="logo-area">
-            <span id="login-title">{{pjtitle}}</span>
+            <span id="login-title" @click="backNewsHome">{{pjtitle}}</span>
         </div>
         <div id="auth-area" class="element-light-shadow">
             <router-view></router-view>
@@ -35,6 +35,9 @@ export default {
                 type: "error"
             });
         },
+        backNewsHome: function () {
+            this.$router.push("/news")
+        }
     },
 
 
@@ -43,6 +46,9 @@ export default {
 </script>
 
 <style scoped>
+    #login-title:hover {
+        cursor: pointer;
+    }
     #auth-content{
         width: 500px;
         margin: 50px auto 0px auto;
