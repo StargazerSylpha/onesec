@@ -8,10 +8,10 @@
             </el-breadcrumb>
         </div>
 
-        <div id="changeinfo-content">
+        <div id="changeinfo-content" class="info-change-content-top">
             <div id="title" class="function-title">修改资料</div>
 
-            <div id="info-items-content">
+            <div id="info-items-content" class="info-change-items-content-left">
                 <div id="info-username">
                     <div>
                         <span class="imp-info-item-title">用户名：</span>
@@ -89,6 +89,7 @@
 
 <script>
 import store from '../store';
+import {autoLogout,dateFormatter} from "../assets/function";
 export default {
     name: "ChangeInfo",
     store,
@@ -129,7 +130,7 @@ export default {
                 this.infoForm.sex = response.data.data.sex;
                 this.infoForm.birthday = dateFormatter(response.data.data.birthday,false);
             } else if(response.data.errcode === 1001) {
-                this.autoLogout();
+                autoLogout();
             } else {
                 this.$message({
                    type: "error",
@@ -139,6 +140,7 @@ export default {
         });
     },
     methods: {
+        /*
         autoLogout: function () {
             authLogout();
             this.$message({
@@ -147,12 +149,27 @@ export default {
             });
             this.$router.push("/auth/login");
         },
+        */
         changeInfo:function () {
             this.submitBtn.loading = true;
             let nickname = this.infoForm.nickname;
             let sex = this.infoForm.sex;
+            //此处datepicker如果没有给值，会赋值1970-01-01（即timestamp的0）
             let birthday = dateFormatter(this.infoForm.birthday,false);
-            if(nickname != null && sex != null && birthday != null) {
+
+            if(nickname == null || nickname.length < 6 || nickname.length > 20) {
+                this.$message({
+                    type: "error",
+                    message: "昵称输入有误，请重新输入！",
+                });
+                this.submitBtn.loading = false;
+            } else if(birthday == null) {
+                this.$message({
+                    type: "error",
+                    message: "生日格式有误，请重新选择！",
+                });
+                this.submitBtn.loading = false;
+            } else if(sex != null) {
                 let postData = "nickname=" + nickname + "&sex=" + sex + "&birthday=" + birthday + "&accessToken=" + localStorage.getItem("accessToken");
                 axios.post(store.state.apiUrl + "/api/user/changeInfo",postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
@@ -162,7 +179,7 @@ export default {
                         });
                         this.submitBtn.loading = false;
                     } else if(response.data.errcode === 1001) {
-                        this.autoLogout();
+                        autoLogout();
                     } else {
                         this.$message({
                             type: "error",
@@ -171,51 +188,22 @@ export default {
                         this.submitBtn.loading = false;
                     }
                 });
+            } else {
+                this.$message({
+                    type: "error",
+                    message: "输入信息有误，请重新输入！",
+                });
+                this.submitBtn.loading = false;
             }
 
 
         }
-    },
-    computed: {
-        /*
-        userNickname: function() {
-            return this.user.nickname;
-        },
-        userSex: function() {
-            return this.user.sex;
-        },
-        userBirthday: function() {
-            return this.user.birthday;
-        },
-        */
-    },
-    watch: {
-        /*
-        userNickname: function () {
-            this.submitBtn.disable = false;
-        },
-        userSex: function () {
-            this.submitBtn.disable = false;
-        },
-        userBirthday: function () {
-            this.submitBtn.disable = false;
-        },
-
-         */
     }
 }
 </script>
 
 <style scoped>
-#changeinfo-content {
-    margin-top: 30px;
-}
 
-
-#info-items-content {
-    margin-top: 20px;
-    margin-left: 5px;
-}
 
 
 </style>

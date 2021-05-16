@@ -1,18 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Auth from "../views/Auth"
-import Login from "../views/Login"
-import Register from "../views/Register";
-import Account from "../views/Account";
-import ChangeInfo from "../views/ChangeInfo";
-import ChangePassword from "../views/ChangePassword";
-import News from "../views/News";
-import NewsHome from "../views/NewsHome";
-import NewsCategory from "../views/NewsCategory";
-import NewsSearch from "../views/NewsSearch";
-import NewsDetail from "../views/NewsDetail";
-
 Vue.use(VueRouter)
+//vuerouter修改似乎需要刷新
+//若出现大小写敏感错误，需要完全删除敏感的一行，然后重新填写
+//直接修改错误的字幕似乎没用
+//router name必写！关系到公共组件菜单的条目高亮！反而vue组件内的name没那么重要了
 
 const routes = [
   {
@@ -22,18 +14,18 @@ const routes = [
   {
     path: '/auth',
     name: 'auth',
-    component: Auth,
+    component: ()=>import("../views/Auth"),
     redirect: '/auth/login',
     children: [
       {
         path: 'login',
         name: 'login',
-        component: Login,
+        component: ()=>import("../views/Login"),
       },
       {
         path: 'register',
         name: 'register',
-        component: Register,
+        component: ()=>import("../views/Register"),
       },
 
         //懒加载不要加大括号！不会显示！
@@ -42,50 +34,78 @@ const routes = [
   {
     path: '/account',
     name: 'account',
-    component: Account,
+    component: () => import("../views/Account"),
     redirect: '/account/changeInfo',
     children: [
       {
         path: 'changeInfo',
         name: 'changeInfo',
-        component: ChangeInfo,
+        component: () => import("../views/ChangeInfo"),
       },
       {
         path: 'changePassword',
         name: 'changePassword',
-        component: ChangePassword,
+        component: () => import("../views/ChangePassword"),
       },
     ],
   },
   {
     path: '/news',
     name: 'news',
-    component: News,
+    component: () => import("../views/News"),
     redirect: '/news/home',
     children: [
       {
         path: 'home',
         name: 'newsHome',
-        component: NewsHome,
+        component: () => import("../views/NewsHome"),
       },
       {
         path: 'category/:categoryId',
         name: 'newsCategory',
-        component: NewsCategory,
+        component: () => import("../views/NewsCategory"),
       },
       {
         path: 'search',
         name: 'newsSearch',
-        component: NewsSearch,
+        component: () => import("../views/NewsSearch"),
       },
       {
         path: 'detail/:articleId',
         name: 'newsDetail',
-        component: NewsDetail
+        component: () => import("../views/NewsDetail")
       },
     ],
 
 
+  },
+  {
+    path:"/console",
+    name:"console",
+    component: ()=> import("../views/Console"),
+    redirect: "/console/articleList",
+    children: [
+      {
+        path:"categoryEdit",
+        name:"categoryEdit",
+        component: () => import("../views/CategoryEdit"),
+      },
+      {
+        path:"articleEdit",
+        name:"articleEdit",
+        component: () => import("../views/ArticleEdit"),
+      },
+      {
+        path:"userList",
+        name:"userList",
+        component: () => import("../views/UserList"),
+      },
+      {
+        path:"articleList",
+        name: "articleList",
+        component: () => import("../views/ArticleList")
+      }
+    ]
   },
   {
     path:"*",

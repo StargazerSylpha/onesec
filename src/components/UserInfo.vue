@@ -27,6 +27,7 @@
 
 <script>
 import store from "../store";
+import {authLogout} from "../assets/function";
 
 export default {
     name: "UserInfo",

@@ -15,10 +15,12 @@
                             <div class="news-share-line"></div>
 
                         </el-col>
+                        <!--
                         <el-col class="col-margin">
                             <div class="item-cursor-hover"><span><i class="el-icon-star-off"></i> 收藏</span></div>
 
                         </el-col>
+                        -->
                         <el-col class="col-margin">
                             <div class="item-cursor-hover" @click="toComment"><span><i class="el-icon-s-comment"></i> 评论</span></div>
                         </el-col>
@@ -51,12 +53,14 @@
                             </div>
                         </el-col>
 
+                        <!--
                         <el-col class="col-margin">
                             <div class="item-cursor-hover"><span><i class="el-icon-service"></i> 建议</span></div>
                         </el-col>
+                        -->
 
                         <el-col class="col-margin">
-                            <div class="item-cursor-hover" @click="backTop"><span><i class="el-icon-top"></i> 最上</span></div>
+                            <div class="item-cursor-hover" @click="backTop"><span><i class="el-icon-top"></i> 页顶</span></div>
                         </el-col>
                     </el-row>
                 </div>

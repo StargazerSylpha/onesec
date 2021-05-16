@@ -19,7 +19,7 @@
                         </div>
                         <div id="comment-function">
                             <span class="cmt-function-btn">回复</span>
-                            <span class="cmt-function-btn" style="margin-left: 10px;">举报</span>
+                            <!--<span class="cmt-function-btn" style="margin-left: 10px;">举报</span>-->
                         </div>
                     </div>
                 </el-col>
@@ -60,7 +60,7 @@ export default {
     margin-top: 10px;
 }
 #comment-content {
-    background-color: red;
+
     margin-top: 10px;
 }
 .comment-header-nickname:hover {

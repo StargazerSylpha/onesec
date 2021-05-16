@@ -42,6 +42,7 @@
 <script>
 
 import store from "../store";
+import {authLogout} from "../assets/function";
 
 /**
  * 加功能：在url上添加返回页urlencode地址，定向跳转
@@ -80,6 +81,7 @@ export default {
                 message: "请联系在线客服处理",
                 type: "error"
             });
+            console.log(store.state.isAdmin === true ? "t":"f")
         },
         toReg() {
             this.$router.push('register');
@@ -92,7 +94,7 @@ export default {
                 this.loginForm.password.length >= 8 && this.loginForm.password.length <= 20) {
                 let loginData = "username=" + this.loginForm.username + "&password=" + this.loginForm.password;
                 axios.post(store.state.apiUrl + "/api/auth/login",loginData).then(response =>  {
-                    if(response.status === 200 & response.data.errcode === 0) {
+                    if(response.status === 200 && response.data.errcode === 0) {
                         /**
                          * 设置localstorage，方便account.vue等组件读取展示用户信息
                          * @type {string}
@@ -100,6 +102,7 @@ export default {
                         let userInfo = JSON.stringify({
                             "uid": response.data.uid,
                             "username": response.data.username,
+                            "usertype":response.data.usertype
                         });
                         localStorage.setItem("userInfo", userInfo);
                         localStorage.setItem("accessToken",response.data.accessToken);
@@ -118,8 +121,7 @@ export default {
                             type: "error",
                             message: "[" + response.data.errcode + "]" + response.data.msg,
                         });
-                        localStorage.removeItem("userInfo");
-                        localStorage.removeItem("accessToken");
+                        authLogout();
                         this.loginBtnLoading = false;
                     }
 
@@ -131,8 +133,7 @@ export default {
                    message: "请将账号与密码填写完整！",
                    type: "error",
                 });
-                localStorage.removeItem("userInfo");
-                localStorage.removeItem("accessToken");
+                authLogout();
                 this.loginBtnLoading = false;
             }
 

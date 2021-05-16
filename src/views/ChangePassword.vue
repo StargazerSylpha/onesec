@@ -8,10 +8,10 @@
             </el-breadcrumb>
         </div>
 
-        <div id="changepassword-content">
+        <div id="changepassword-content" class="info-change-content-top">
             <div id="title" class="function-title">修改密码</div>
 
-            <div id="info-items-content">
+            <div id="info-items-content" class="info-change-items-content-left">
                 <el-form :model="changePwdForm" :rules="changePwdFormRules">
                 <div>
                     <div>
@@ -64,6 +64,7 @@
 
 <script>
 import store from "../store";
+import {autoLogout} from "../assets/function";
 
 export default {
     name: "ChangePassword",
@@ -103,7 +104,7 @@ export default {
             if(response.status === 200 && response.data.errcode === 0) {
                 //...
             } else if(response.data.errcode === 1001) {
-                this.autoLogout();
+                autoLogout();
             } else {
                 this.$message({
                     type: "error",
@@ -113,6 +114,7 @@ export default {
         });
     },
     methods: {
+        /*
         autoLogout: function (type,msg) {
             authLogout();
             if(typeof type === "undefined" || typeof msg === "undefined") {
@@ -128,6 +130,8 @@ export default {
             }
             this.$router.push("/auth/login");
         },
+
+         */
         changePassword: function () {
             this.submitBtn.loading = true;
             let oldPwd = this.changePwdForm.oldPwd;
@@ -158,9 +162,9 @@ export default {
                                 "&oldpassword=" + oldPwd + "&newpassword=" + newPwd;
                 axios.post(store.state.apiUrl + "/api/user/changePassword",postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
-                        this.autoLogout("success","密码修改成功！请重新登录");
+                        autoLogout("success","密码修改成功！请重新登录");
                     } else if(response.data.errcode === 1001) {
-                        this.autoLogout();
+                        autoLogout();
                     } else {
                         this.$message({
                             type: "error",
@@ -176,13 +180,5 @@ export default {
 </script>
 
 <style scoped>
-#changepassword-content {
-    margin-top: 30px;
-}
 
-
-#info-items-content {
-    margin-top: 20px;
-    margin-left: 5px;
-}
 </style>

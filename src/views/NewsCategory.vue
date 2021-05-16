@@ -6,7 +6,7 @@
                     <!-- 新闻列表-->
                     <div id="news-home-mid-list">
                         <div id="news-home-mid-title" class="function-title">娱乐新闻</div>
-                        <div>
+                        <div class="news-item-list">
                             <NewsItem></NewsItem>
                             <NewsItem></NewsItem>
                             <NewsItem></NewsItem>

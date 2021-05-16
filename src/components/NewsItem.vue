@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import {dateFormatter} from "../assets/function";
 export default {
     name: "NewsItem",
     props:['article'],

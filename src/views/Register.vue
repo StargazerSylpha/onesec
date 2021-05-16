@@ -54,6 +54,7 @@
 
 <script>
 import store from "../store";
+import {authLogout} from "../assets/function";
 
 export default {
     name: "Register",
@@ -112,8 +113,7 @@ export default {
                                     type: "success",
                                     message: "注册成功！正在转向登录页..."
                                 });
-                                localStorage.removeItem("userInfo");
-                                localStorage.removeItem("accessToken");
+                                authLogout();
                                 this.$router.push("login");
                             } else {
                                 this.$message({

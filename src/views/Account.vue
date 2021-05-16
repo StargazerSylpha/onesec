@@ -19,7 +19,8 @@
                     <el-row>
                         <el-col :span="4" :style="naviWidth">
                             <div id="acc-navi">
-                                <el-menu :default-openeds="menuOpen" :default-active="$route.name" :router="true">
+                                <el-menu :default-openeds="menuOpen" :default-active="$route.name" @select="menuJump">
+                                    <el-menu-item index="console" v-if="consoleBtnDisplay" class="acc-navi-css"><i class="el-icon-s-operation"></i>控制台</el-menu-item>
                                     <el-submenu index="user" class="acc-navi-css" >
                                         <i class="el-icon-setting" slot="title"></i><span slot="title">账号设置</span>
 
@@ -63,6 +64,7 @@
 
 <script>
 import store from '../store';
+import {autoLogout, confirmLogout} from "../assets/function";
 
 export default {
     name: "Account",
@@ -77,6 +79,7 @@ export default {
 
             accNaviActive: '',
             naviWidth: '',
+            consoleBtnDisplay:false,
         }
     },
     mounted: function() {
@@ -91,19 +94,46 @@ export default {
             this.naviWidth = '';
         }
 
+        let authData = "accessToken=" + localStorage.getItem("accessToken");
+        axios.post(store.state.apiUrl + "/api/user/getUserInfo",authData).then(response => {
+            if(response.status === 200 && response.data.errcode === 0) {
+                if(response.data.data.usertype === 1) {
+                    this.consoleBtnDisplay = true;
+                }
+                this.userInfo.userName = response.data.data.username;
+            } else if(response.data.errcode === 1001) {
+                //路由设置 访问account.vue组件会自动跳转至changeinfo 那里会进行判定及自动登出
+                //所以不用管
+            } else {
+                this.$message({
+                    type: "error",
+                    message: "[" + response.data.errcode + "]" + response.data.msg,
+                });
+            }
+        });
+        /*
         this.userInfo.userName = (typeof (JSON.parse(localStorage.getItem("userInfo")).username) === 'undefined')?
             (""): (JSON.parse(localStorage.getItem("userInfo")).username) ;
 
-
+        */
 
 
 
     },
     methods: {
+        menuJump(_index,_indexPath) {
+            if(_index === "console") {
+                this.$router.push("/console")
+            } else {
+                this.$router.push(_index);
+            }
+
+        },
         backHome: function () {
             this.$router.push('/news');
         },
         logout: function () {
+            /*
             this.$confirm("确认登出吗？","登出",{
                 confirmButtonText: "确认",
                 cancelButtonText: "取消",
@@ -117,28 +147,13 @@ export default {
                 this.$router.push("/auth/login");
 
             });
+            */
+            confirmLogout();
 
         },
 
 
     },
-    computed: {
-        /*
-        routeName: function () {
-            return this.$route.name;
-        },
-
-         */
-
-    },
-    watch: {
-        /*
-        routeName: function () {
-            this.accNaviActive = this.$route.name;
-        },
-        */
-    },
-
 
 }
 </script>
@@ -178,9 +193,6 @@ export default {
         /*margin-left: 20px;*/
     }
 
-    .acc-navi-css {
-        background-color: #eaeaea;
-    }
 
     #acc-content {
         background-color: white;

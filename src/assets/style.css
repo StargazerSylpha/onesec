@@ -103,6 +103,7 @@
     font-size: 20px;
     color: #606266;
     border-left: 5px solid #409eff;
+    padding-left: 10px;
 }
 
 /*欢迎，username的文字样式*/
@@ -136,5 +137,36 @@
 .news-home-mid {
     background-color: white;
 }
+.news-item-list {
+    margin-top: 10px;
+}
 
 /*新闻detail及item组件 link hover样式*/
+
+/*=============================*/
+/*
+ * account console内部 修改信息页 function-title与下部主要内容间距
+ */
+
+.info-change-content-top {
+    margin-top: 30px;
+}
+/*function title下部 主要内容的左边距与上边距*/
+.info-change-items-content-left {
+    margin-top: 20px;
+    margin-left: 5px;
+}
+/*account console 左侧菜单item背景色*/
+.acc-navi-css {
+    background-color: #eaeaea;
+}
+/*不加el-menu-item会导致submenu一同点亮*/
+.acc-navi-css.el-menu-item:hover {
+    background-color: #eef5fe;
+}
+
+/*====================*/
+/*console edit界面 dialog样式*/
+.edit-form-item-row-space {
+    margin-top: 10px;
+}

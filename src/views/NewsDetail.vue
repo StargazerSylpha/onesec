@@ -72,6 +72,8 @@
 <script>
 
 import store from "../store";
+import {dateFormatter} from "../assets/function";
+
 export default {
     name: "NewsDetail",
     components: {
@@ -107,6 +109,11 @@ export default {
                 });
 
             }
+        }).catch(error => {
+            this.$message({
+                type: "error",
+                message: "[" + error.response.data.errcode + "]" + error.response.data.msg,
+            });
         });
 
 
@@ -156,9 +163,11 @@ export default {
     height: 100%;
     font-weight: bold;
 }
+#news-detail-head-description {
+    margin-top: 10px;
+}
 
 .news-detail-head-description {
-    margin-top: 10px;
     color: #999999;
     font-size: 15px;
 }

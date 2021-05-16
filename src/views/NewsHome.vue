@@ -20,7 +20,7 @@
                     <!-- 中部新闻列表-->
                     <div id="news-home-mid-list">
                         <div id="news-home-mid-title" class="function-title">最新文章</div>
-                        <div>
+                        <div class="news-item-list">
 
                             <NewsItem v-for="article in articleList" :key="article.id" :article="article"></NewsItem>
 
