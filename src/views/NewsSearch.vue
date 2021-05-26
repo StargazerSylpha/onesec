@@ -5,11 +5,11 @@
                 <div class="news-home-mid">
                     <!-- 新闻列表-->
                     <div id="news-home-mid-list">
-                        <div id="news-home-mid-title" class="function-title">搜索结果</div>
+                        <div id="news-home-mid-title" class="function-title">搜索结果：「{{getArticleSearchResultForm.keyword}}」</div>
                         <div class="news-item-list">
-                            <NewsItem></NewsItem>
-                            <NewsItem></NewsItem>
-                            <NewsItem></NewsItem>
+                            <NewsItem v-for="article in articleList" :article="article" :key="article.id"></NewsItem>
+                            <el-button ref="getArticleListBtn" v-if="getArticleSearchResultForm.btnDisplay" type="primary" size="small" style="width: 100%" @click="articleSearch" :loading="getArticleSearchResultForm.loadingNotice">加 载 更 多</el-button>
+
                         </div>
 
                     </div>
@@ -21,22 +21,14 @@
                 <div id="news-home-right">
 
                     <div id="news-home-right-top-search">
-                        <el-input placeholder="请输入要搜索的关键词" v-model="searchKeyword"  prefix-icon="el-icon-search" clearable>
-                            <el-button slot="append" >搜 索</el-button>
-                        </el-input>
+                        <SearchWidget></SearchWidget>
                     </div>
 
                     <div id="news-home-right-mid-user" class="news-home-right-compo">
-                        <UserInfo :user="user"></UserInfo>
+                        <UserInfo></UserInfo>
                     </div>
                     <div id="news-home-right-bottom-news" class="news-home-right-compo">
-                        <div id="news-home-right-bottom-news-title" class="function-title">推荐阅读</div>
-                        <div id="news-home-right-bottom-news-list">
-                            <ul>
-                                <li>1.balabalabala</li>
-                                <li>2.balabalabala</li>
-                            </ul>
-                        </div>
+                        <TrendingWidget></TrendingWidget>
                     </div>
 
                 </div>
@@ -51,29 +43,64 @@
 
 <script>
 
-import UserInfo from "../components/UserInfo";
-import NewsItem from "../components/NewsItem";
+import store from "../store";
+
 export default {
     name: "NewsSearch",
     components: {
-        UserInfo,
-        NewsItem,
+        SearchWidget: () => import("../components/SearchWidget"),
+        UserInfo: () => import("../components/UserInfo"),
+        NewsItem: () => import("../components/NewsItem"),
+        TrendingWidget: () => import("../components/TrendingWidget"),
+
     },
     mounted() {
-        this.user.username = (typeof (JSON.parse(localStorage.getItem("userInfo")).username) === 'undefined')?
-            (""): (JSON.parse(localStorage.getItem("userInfo")).username) ;
+        this.getArticleSearchResultForm.keyword = this.$route.query.keyword;
+        this.articleSearch();
     },
     data() {
         return {
-            searchKeyword:"",
-            user: {
-                isLogin: false,
-                username: "",
-            }
+            getArticleSearchResultForm: {
+                btnDisplay: true,
+                loadingNotice: false,
+                page:0,
+                keyword:"",
+
+            },
+            articleList:[],
+            newArticleList:[],
         }
     },
     methods: {
+        articleSearch: function() {
+            this.getArticleSearchResultForm.loadingNotice = true;
 
+            axios.get(store.state.apiUrl + "/api/article/articleSearch", {
+                params:{
+                    "page":this.getArticleSearchResultForm.page,
+                    "keyword": this.getArticleSearchResultForm.keyword,
+                }
+            }).then(response => {
+                if(response.status === 200 && response.data.errcode === 0) {
+                    this.newArticleList = response.data.data;
+                    this.getArticleSearchResultForm.page ++;
+                    this.articleList = this.articleList.concat(this.newArticleList);
+                    this.getArticleSearchResultForm.loadingNotice = false;
+
+                } else if(response.data.errcode === 20101) {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                    this.getArticleSearchResultForm.btnDisplay = false;
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                }
+            });
+        }
     },
 }
 </script>

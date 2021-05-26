@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="user-info-avatar">
-            <img class="user-info-avatar" width="90" height="90" :src="user.avatar">
+            <img class="user-info-avatar" width="90" height="90" :src="user.avatar" :onerror="defaultAvatar">
         </div>
 
         <div id="user-info-username" class="container-username">
@@ -20,7 +20,7 @@
         </div>
 
         <div id="user-info-notice">
-            <span>登录后可以对文章点赞、评论、收藏哦</span>
+            <span>登录后可以对文章进行评论哦</span><!--点赞 收藏哦-->
         </div>
     </div>
 </template>
@@ -31,13 +31,15 @@ import {authLogout} from "../assets/function";
 
 export default {
     name: "UserInfo",
+    store,
     data() {
         return {
             user: {
                 isLogin: false,
-                nickname: "",
+                nickname: "请登录",
                 avatar: store.state.defaultAvatar,
-            }
+            },
+            defaultAvatar: 'this.src = "' + store.state.defaultAvatar + '"',
         }
     },
     mounted() {

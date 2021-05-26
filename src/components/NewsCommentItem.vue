@@ -4,21 +4,23 @@
             <el-row>
                 <el-col class="news-comment-item-avatar-col">
                     <div>
-                        <img @click="toCommentUser" width="50" height="50" class="comment-user-avatar" :src="commentUserAvatar" >
+                        <img @click="toCommentUser" width="50" height="50" class="comment-user-avatar" :src="comment.authorAvatar" :onerror="defaultAvatar" >
                     </div>
                 </el-col>
                 <el-col class="news-comment-item-content-col">
                     <div id="news-comment-item-content-container">
                         <div id="comment-header">
-                            <span class="comment-header-nickname" @click="toCommentUser">administrator1145141</span>
-                            <span class="comment-header-time">2020-01-01 14:44:44</span>
+                            <span class="comment-header-nickname" @click="toCommentUser">{{comment.authorNickname}}</span>
+
+                            <!--<span class="comment-header-time">{{comment.publishDate}}</span>-->
                         </div>
 
-                        <div id="comment-content">
-                            1
+                        <div id="comment-content" v-html="comment.comment" >
+
                         </div>
                         <div id="comment-function">
-                            <span class="cmt-function-btn">回复</span>
+                            <span class="cmt-function-btn">#{{comment.cid}}</span>
+                            <span class="cmt-function-btn" style="margin-left: 10px;">{{comment.publishDate}}</span>
                             <!--<span class="cmt-function-btn" style="margin-left: 10px;">举报</span>-->
                         </div>
                     </div>
@@ -34,14 +36,16 @@ import store from "../store";
 export default {
     name: "NewsCommentItem",
     store,
+    props:['comment'],
     data() {
         return {
-            commentUserAvatar: store.state.defaultAvatar,
+            defaultAvatar: 'this.src = "' + store.state.defaultAvatar + '"',
         }
     },
     methods: {
         toCommentUser() {
-            console.log(123)
+            console.log(this.comment.author);
+
         }
     }
 }
@@ -62,15 +66,24 @@ export default {
 #comment-content {
 
     margin-top: 10px;
+    white-space: pre-wrap;
 }
 .comment-header-nickname:hover {
     color: #409eff;
     cursor: pointer;
 }
+.comment-header-nickname {
+    color: #606266;
+    font-size: 15px;
+}
+/*
+comment item 作者昵称右侧 发表时间
 .comment-header-time {
     color: #999999;
     margin-left: 10px;
 }
+
+ */
 #comment-header {
     font-size: 15px;
 }

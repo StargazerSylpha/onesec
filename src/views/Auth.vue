@@ -11,7 +11,7 @@
             </div>
         </div>
         <div id="auth-copyright">
-            <span class="copyright">Copyright &copy; 2021 Project ONESEC / Sylpha Project Co., Ltd. All Rights Reserved.</span>
+            <span class="copyright">{{ $store.state.copyright }}</span>
 
         </div>
     </div>

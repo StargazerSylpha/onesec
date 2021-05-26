@@ -5,11 +5,11 @@
                 <div class="news-home-mid">
                     <!-- 新闻列表-->
                     <div id="news-home-mid-list">
-                        <div id="news-home-mid-title" class="function-title">娱乐新闻</div>
+                        <div id="news-home-mid-title" class="function-title">分类：{{categoryName}}</div>
                         <div class="news-item-list">
-                            <NewsItem></NewsItem>
-                            <NewsItem></NewsItem>
-                            <NewsItem></NewsItem>
+                            <!--...-->
+                            <NewsItem v-for="article in articleList" :key="article.id" :article="article"></NewsItem>
+                            <el-button style="width: 100%" ref="getArticleListBtn" v-if="btnDisplay" type="primary" size="small" class="getArticleListBtn" @click="getArticleList" :loading="loadingNotice">加 载 更 多</el-button>
                         </div>
 
                     </div>
@@ -20,23 +20,15 @@
             <el-col class="news-home-right-col">
                 <div id="news-home-right">
 
-                    <div id="news-home-right-top-search">
-                        <el-input placeholder="请输入要搜索的关键词" v-model="searchKeyword"  prefix-icon="el-icon-search" clearable>
-                            <el-button slot="append" >搜 索</el-button>
-                        </el-input>
+                    <div>
+                        <SearchWidget></SearchWidget>
                     </div>
 
                     <div id="news-home-right-mid-user" class="news-home-right-compo">
-                        <UserInfo :user="user"></UserInfo>
+                        <UserInfo></UserInfo>
                     </div>
                     <div id="news-home-right-bottom-news" class="news-home-right-compo">
-                        <div id="news-home-right-bottom-news-title" class="function-title">推荐阅读</div>
-                        <div id="news-home-right-bottom-news-list">
-                            <ul>
-                                <li>1.balabalabala</li>
-                                <li>2.balabalabala</li>
-                            </ul>
-                        </div>
+                        <TrendingWidget></TrendingWidget>
                     </div>
 
                 </div>
@@ -51,29 +43,65 @@
 
 <script>
 
-import UserInfo from "../components/UserInfo";
-import NewsItem from "../components/NewsItem";
+
+import store from "../store";
+
 export default {
     name: "NewsCategory",
     components: {
-        UserInfo,
-        NewsItem,
+        UserInfo: () => import("../components/UserInfo"),
+        NewsItem: () => import("../components/NewsItem"),
+        SearchWidget: () => import("../components/SearchWidget"),
+        TrendingWidget: () => import("../components/TrendingWidget")
+
     },
     mounted() {
-        this.user.username = (typeof (JSON.parse(localStorage.getItem("userInfo")).username) === 'undefined')?
-            (""): (JSON.parse(localStorage.getItem("userInfo")).username) ;
+        this.category = this.$route.params.categoryId;
+        this.getArticleList();
     },
     data() {
         return {
-            searchKeyword:"",
-            user: {
-                isLogin: false,
-                username: "",
-            }
+            category:-1,
+            categoryName:"",
+            page:0,
+            articleList:[],
+            newArticleList:[],
+            loadingNotice: true,
+            btnDisplay: true,
+
         }
     },
     methods: {
+        getArticleList: function() {
+            this.loadingNotice = true;
+            axios.get(store.state.apiUrl + "/api/article/getArticleList", {
+                params:{
+                    category: this.category,
+                    "page":this.page
+                }
+            }).then(response => {
+                if(response.status === 200 && response.data.errcode === 0) {
+                    this.newArticleList = response.data.data;
+                    this.categoryName = this.newArticleList[0].catName;
+                    document.title = "分类：" +  this.categoryName + ' - 新闻 - ' + store.state.pageTitle;
+                    this.page ++;
+                    this.articleList = this.articleList.concat(this.newArticleList);
+                    this.loadingNotice = false;
 
+                } else if(response.data.errcode === 2021) {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                    this.btnDisplay = false;
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                }
+            });
+        }
     },
 }
 </script>

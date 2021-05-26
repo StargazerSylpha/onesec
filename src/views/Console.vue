@@ -74,7 +74,7 @@
 
             <el-footer>
                 <div class="container-copyright">
-                    <span>Copyright &copy; 2021 Project ONESEC / Sylpha Project Co., Ltd. All Rights Reserved.</span>
+                    <span>{{$store.state.copyright}} {{$store.state.version}}</span>
                 </div>
             </el-footer>
         </el-container>
@@ -128,6 +128,9 @@ export default {
                 }
                 this.userInfo.userName = response.data.data.username;
             } else if(response.data.errcode === 1001) {
+                //account.vue组件可以因为自动跳转而不用鉴权
+                //但articleList和TrendingList是公用api，get不用鉴权，容易给普通用户展现
+                //所以必须要设置自动autoLogout
                 autoLogout();
             } else {
                 this.$message({

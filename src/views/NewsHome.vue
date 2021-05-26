@@ -5,14 +5,14 @@
                 <div class="news-home-mid">
                     <div id="news-banner">
                         <el-carousel trigger="click">
-                            <el-carousel-item>
-                                <img src="//img.36krcdn.com/20210412/v2_ae552ee88c9f4066a0abc79ecb6d70fe_img_jpg" width="100%" height="300">
-                            </el-carousel-item>
-                            <el-carousel-item>
-                                <img src="//img.36krcdn.com/20210411/v2_851121309a99417c8d6f6df682f3a2b3_img_jpeg" width="100%" height="300">
-                            </el-carousel-item>
-                            <el-carousel-item>
-                                <img src="//img.36krcdn.com/20210412/v2_8a0631cbc25b40c6996635c50e9871bc_img_png" width="100%" height="300">
+                            <el-carousel-item v-for="item in trendingList" :key="item.id" :item="item">
+                                <div class="hover-pointer" @click="toTrending(item.link)">
+                                    <img :src="item.banner" :onerror="defaultBanner" width="100%" height="300">
+                                    <div class="banner-bg">
+                                        <!--最长字数35-->
+                                        <span>{{item.title}}</span>
+                                    </div>
+                                </div>
                             </el-carousel-item>
                         </el-carousel>
 
@@ -36,23 +36,15 @@
             <el-col class="news-home-right-col">
                 <div id="news-home-right">
 
-                    <div id="news-home-right-top-search">
-                        <el-input placeholder="请输入要搜索的关键词" v-model="searchKeyword"  prefix-icon="el-icon-search" clearable>
-                            <el-button slot="append" >搜 索</el-button>
-                        </el-input>
+                    <div><!--id="news-home-right-top-search"-->
+                        <SearchWidget></SearchWidget>
                     </div>
 
                     <div id="news-home-right-mid-user" class="news-home-right-compo">
                         <UserInfo></UserInfo>
                     </div>
                     <div id="news-home-right-bottom-news" class="news-home-right-compo">
-                        <div id="news-home-right-bottom-news-title" class="function-title">推荐阅读</div>
-                        <div id="news-home-right-bottom-news-list">
-                            <ul>
-                                <li>1.balabalabala</li>
-                                <li>2.balabalabala</li>
-                            </ul>
-                        </div>
+                        <TrendingWidget></TrendingWidget>
                     </div>
 
                 </div>
@@ -66,34 +58,58 @@
 </template>
 
 <script>
-import UserInfo from "../components/UserInfo";
-import NewsItem from "../components/NewsItem";
 import store from "../store";
+import {dateFormatter} from "../assets/function";
 export default {
     name: "NewsHome",
     components: {
-        UserInfo,
-        NewsItem,
+        UserInfo: () => import("../components/UserInfo"),
+        NewsItem: () => import("../components/NewsItem"),
+        TrendingWidget: () => import("../components/TrendingWidget"),
+        SearchWidget: () => import("../components/SearchWidget")
     },
-
+    store,
     data() {
         return {
-            searchKeyword:"",
             /**
              * 因为每页的item数太小，导致一进页面就一次性全加载完了，先不管了
              * v-infinite-scroll要配合overflow:auto配合使用，不然不起作用
              */
+
             page:0,
             articleList:[],
             newArticleList:[],
             loadingNotice: true,
             btnDisplay: true,
+            trendingList:[],
+            defaultBanner: 'this.src = "' + store.state.defaultBanner + '"',
         }
     },
     mounted() {
         this.getArticleList();
+        this.getTrendingList();
     },
     methods: {
+        toTrending(_link) {
+            window.open(_link,"_blank");
+        },
+        getTrendingList() {
+            axios.get(store.state.apiUrl + "/api/trending/getTrendingList?type=banner").then(response => {
+                if(response.status === 200 && response.data.errcode === 0) {
+                    let resultList = response.data.data;
+                    for(let i = 0;i < resultList.length; i++) {
+                        resultList[i].title = (resultList[i].title.length <= 35)?(resultList[i].title):
+                            (resultList[i].title.substring(0,35) + "...");
+                    }
+                    this.trendingList = resultList;
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                }
+            });
+        },
         getArticleList: function() {
             this.loadingNotice = true;
             axios.get(store.state.apiUrl + "/api/article/getArticleList", {params:{"page":this.page}}).then(response => {
@@ -141,17 +157,31 @@ export default {
     margin-top: 15px;
 }
 
-#news-home-right-bottom-news-list ul {
-    list-style: none;
-    margin: 0px 0px 0px 5px;
 
-    padding-inline-start: 0px;
+
+.banner-bg {
+    /**
+     * el走马灯下只能跟一个root标签，还不原生支持标题显示
+     * https://blog.csdn.net/weixin_48931875/article/details/111058475
+     * z-index只在定位元素上才生效，即position:absolute
+     * 使背景透明而文字不透明：使用rgba()来设定背景颜色和透明度
+     * https://www.cnblogs.com/dududyx/p/4885010.html
+     * 背景颜色渐变：https://www.runoob.com/css3/css3-gradients.html
+     * 仅支持background-image,不支持background-color
+     *
+     */
+    position: absolute;
+    z-index: 3;
+    top: 240px;
+    height: 27px;
+    width: 720px;
+    background-image: linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0.5));
+    padding: 13px 15px 20px 15px;
+    font-size: 20px;
+    color: white;
 }
-
-#news-home-right-bottom-news-list li {
-    font-size: 17px;
-    line-height: 25px;
-    color: #606266;
+.hover-pointer:hover {
+    cursor: pointer;
 }
 
 </style>

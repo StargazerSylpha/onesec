@@ -13,14 +13,14 @@
 
             <div id="user-list-table" class="info-change-items-content-left">
                 <el-table :data="userList" v-loading="getUserListLoading">
-                    <el-table-column prop="uid" width="100" label="UID"></el-table-column>
+                    <el-table-column sortable prop="uid" width="100" label="UID"></el-table-column>
                     <el-table-column prop="usertype" width="100" label="用户类型"></el-table-column>
                     <el-table-column prop="username" width="160" label="用户名"></el-table-column>
                     <el-table-column prop="nickname" width="160" label="昵称"></el-table-column>
                     <el-table-column prop="email" width="300" label="电子邮箱"></el-table-column>
                     <el-table-column prop="sex" width="70" label="性别"></el-table-column>
                     <el-table-column prop="birthday" width="100" label="生日"></el-table-column>
-                    <el-table-column prop="regtime" width="160" label="注册时间" ></el-table-column>
+                    <el-table-column sortable prop="regtime" width="160" label="注册时间" ></el-table-column>
                     <!--表格隐藏列仅接受v-if和v-show，不接受display和visibility 不过这样也好 v-if连源代码都不会显示-->
                     <el-table-column prop="userobject" v-if="false" label="usertObject" ></el-table-column>
                     <el-table-column label="操作" fixed="right">
@@ -32,7 +32,7 @@
                 </el-table>
             </div>
 
-            <el-dialog id="edit-user-dialog" title="编辑用户信息" :visible="editUserForm.dialogVisivle" width="15%" :before-close="closeEditUserDialog">
+            <el-dialog :close-on-click-modal="false" id="edit-user-dialog" title="编辑用户信息" :visible="editUserForm.dialogVisible" width="15%" :before-close="closeEditUserDialog">
                 <div><!--editCategoryForm-->
                     <el-tabs v-model="activeTab">
                         <el-tab-pane label="信息" name="info">
@@ -47,7 +47,7 @@
                             </el-radio-group>
 
                             <div class="edit-form-item-row-space"><strong>用户名：</strong></div>
-                            <el-input type="text" v-model="editUserForm.username" class="edit-form-item-row-space" size="small" placeholder="用户名（6~20字符）" minlength="6" maxlength="20" >
+                            <el-input show-word-limit type="text" v-model="editUserForm.username" class="edit-form-item-row-space" size="small" placeholder="用户名（6~20字符）" minlength="6" maxlength="20" >
                             </el-input>
 
                             <div class="imp-info-item-descrption edit-form-item-row-space">
@@ -56,7 +56,7 @@
                             </div>
 
                             <div class="edit-form-item-row-space"><strong>昵称：</strong></div>
-                            <el-input type="text" v-model="editUserForm.nickname" class="edit-form-item-row-space" size="small" placeholder="昵称（6~20字符）" minlength="6" maxlength="20" >
+                            <el-input show-word-limit type="text" v-model="editUserForm.nickname" class="edit-form-item-row-space" size="small" placeholder="昵称（6~20字符）" minlength="6" maxlength="20" >
                             </el-input>
 
                             <div class="edit-form-item-row-space"><strong>电子邮箱：</strong></div>
@@ -138,7 +138,7 @@ export default {
             userList: [],
             getUserListLoading: false,
             editUserForm: {
-                dialogVisivle:false,
+                dialogVisible:false,
                 uid:-1,
                 username:"",
                 usertype:-1,
@@ -202,11 +202,11 @@ export default {
              * dialog的右上角关闭x号实现关闭功能需要填写 :before-close，
              * 但直接在:before-close内写dialogVisible = false是不起作用的，必须另起一个函数写
              */
-            this.editUserForm.dialogVisivle = false;
+            this.editUserForm.dialogVisible = false;
             this.activeTab = "info";
         },
         openEditUser(_uid, _userobj) {
-            this.editUserForm.dialogVisivle = true;
+            this.editUserForm.dialogVisible = true;
             this.activeTab = "info";
 
             this.editUserForm.uid = _uid;
@@ -356,7 +356,7 @@ export default {
                                 message: "删除成功！",
                             });
                             this.getUserList();
-                            this.editUserForm.dialogVisivle = false;
+                            this.editUserForm.dialogVisible = false;
                             this.editUserForm.submitBtnLoading = false;
 
                         } else if(response.data.errcode === 1001) {

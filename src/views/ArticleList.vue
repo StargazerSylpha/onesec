@@ -11,8 +11,6 @@
         <div class="info-change-content-top"><!--category-edit-content-->
             <div class="function-title">文章列表</div>
 
-
-
             <div id="article-list-table" class="info-change-items-content-left">
 
 
@@ -22,11 +20,11 @@
                             <el-pagination layout="prev,pager,next" :page-size="getArticleListForm.pageSize" @current-change="pageChange" :current-page="getArticleListForm.currentPage" :total="getArticleListForm.total"></el-pagination>
                         </el-col>
 
-                        <el-col style="margin-left: 10px;width: 280px;">
+                        <el-col style="margin-left: 10px;width: 300px;">
                             <div><!--article-search-container-->
                                 <el-form :model="articleSearchForm">
                                     <el-input placeholder="请输入搜索关键字..." style="width: 200px;" size="small" v-model="articleSearchForm.searchKeyword"></el-input>
-                                    <el-button :loading="articleSearchForm.submitBtnLoading" type="primary" size="small" style="margin-left: 10px;" @click="">搜 索</el-button>
+                                    <el-button :loading="articleSearchForm.submitBtnLoading" type="primary" size="small" style="margin-left: 10px;" @click="articleSearch(0)">搜 索</el-button>
                                 </el-form>
                             </div>
                         </el-col>
@@ -38,12 +36,14 @@
                 <div class="edit-form-item-row-space">
                     <el-table class="article-list-table" :data="articleList" v-loading="getArticleListLoading">
                         <el-table-column prop="id" width="100" label="文章ID" sortable></el-table-column>
-                        <el-table-column prop="title" width="700"  label="文章标题">
+                        <el-table-column prop="title" width="400"  label="文章标题" show-overflow-tooltip>
                             <template slot-scope="scope">
                                 <el-link :underline="false" @click="toNewsDetail(scope.row.id)">{{scope.row.title}}</el-link>
                             </template>
                         </el-table-column>
+                        <el-table-column prop="category" width="150" label="分类ID & 分类名称" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="author" width="180" label="UID & 作者昵称"></el-table-column>
+                        <el-table-column prop="banner" width="200" label="横幅URL" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="publishDate" width="160" label="发布日期" sortable></el-table-column>
                         <!--表格隐藏列仅接受v-if和v-show，不接受display和visibility 不过这样也好 v-if连源代码都不会显示-->
                         <el-table-column label="操作" fixed="right">
@@ -133,7 +133,12 @@ export default {
         pageChange(_newPage) {
             //后台页码从0开始...
             this.getArticleListForm.currentPage = _newPage;
-            this.getArticleList(_newPage - 1);
+            if(this.articleSearchForm.searchKeyword.length < 1) {
+                this.getArticleList(_newPage - 1);
+            } else {
+                this.articleSearch(_newPage - 1);
+            }
+
 
         },
         getArticleList(_pageId) {
@@ -155,12 +160,11 @@ export default {
                          */
                         resultList[i].author = "[" + resultList[i].author + "]" + resultList[i].authorNickname;
                         resultList[i].publishDate = dateFormatter(resultList[i].publishDate,true);
+                        resultList[i].category = "[" + resultList[i].category + "]" + resultList[i].catName;
                     }
                     this.articleList = resultList;
                     this.getArticleListLoading = false;
 
-                } else if(response.data.errcode === 1001) {
-                    autoLogout();
                 } else  {
                     this.$message({
                         type: "error",
@@ -175,6 +179,53 @@ export default {
                 });
             });
         },
+        articleSearch: function(_pageId) {
+            //1.搜索按键禁用
+            this.articleSearchForm.submitBtnLoading = true;
+            let page = (_pageId == null || typeof _pageId === "undefined" || _pageId < 1) ? 0 : _pageId;
+            if(this.articleSearchForm.searchKeyword.length < 1) {
+                this.getArticleListForm.currentPage = 1;
+                this.getArticleList();
+                this.articleSearchForm.submitBtnLoading = false;
+                return;
+            }
+            //2.表格白圈圈启动
+            this.getArticleListLoading = true;
+            axios.get(store.state.apiUrl + "/api/article/articleSearch", {
+                params:{
+                    "page":page,
+                    "keyword": this.articleSearchForm.searchKeyword,
+                }
+            }).then(response => {
+                if(response.status === 200 && response.data.errcode === 0) {
+
+                    let resultList = response.data.data;
+                    this.getArticleListForm.total = response.data.size;
+                    //js的对象for循环中间不是冒号，是in
+                    for(let i = 0;i < resultList.length; i++) {
+
+                        resultList[i].author = "[" + resultList[i].author + "]" + resultList[i].authorNickname;
+                        resultList[i].publishDate = dateFormatter(resultList[i].publishDate,true);
+                        resultList[i].category = "[" + resultList[i].category + "]" + resultList[i].catName;
+                    }
+                    this.articleList = resultList;
+                    this.getArticleListLoading = false;
+                    this.articleSearchForm.submitBtnLoading = false;
+
+                } else if(response.data.errcode === 20101) {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                    this.articleSearchForm.submitBtnLoading = false;
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: "[" + response.data.errcode + "]" + response.data.msg,
+                    });
+                }
+            });
+        }
     }
 }
 </script>

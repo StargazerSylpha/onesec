@@ -4,13 +4,13 @@
             <el-row>
                 <el-col class="news-item-img">
                     <div id="news-item-img">
-                        <img width="200" height="120" :src="article.banner">
+                        <img width="200" height="120" :src="article.banner" :onerror="defaultBanner" />
                     </div>
                 </el-col>
                 <el-col class="news-item-detail">
                     <div id="news-item-detail">
                         <div id="news-item-detail-word">
-                            <span class="news-item-detail-title-text" @click="toNewsDetail">{{ article.title }}</span>
+                            <span class="news-item-detail-title-text" @click="toNewsDetail(article.id)">{{ article.title }}</span>
                         </div>
                         <div id="news-item-detail-category" class="news-item-detail-category-text">
                             <span class="news-item-detail-link" @click="toCategory"><i class="el-icon-folder-opened"></i>分类：{{ article.catName }}</span>
@@ -33,12 +33,14 @@
 
 <script>
 import {dateFormatter} from "../assets/function";
+import store from "../store";
 export default {
     name: "NewsItem",
     props:['article'],
+    store,
     data() {
         return {
-
+            defaultBanner: 'this.src = "' + store.state.defaultBanner + '"',
         }
     },
     methods: {
@@ -51,9 +53,11 @@ export default {
         toCategory() {
             this.$router.push("/news/category/" + this.article.category);
         },
-        toNewsDetail() {
-            this.$router.push("/news/detail/" + this.article.id);
-        }
+        toNewsDetail(_articleId) {
+            //vue主做单页应用，新页面打开窗口被取缔掉了不方便
+            let url = this.$router.resolve("/news/detail/" + _articleId);
+            window.open(url.href,"_blank");
+        },
     }
 }
 </script>

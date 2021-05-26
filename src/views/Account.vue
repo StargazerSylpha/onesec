@@ -32,10 +32,12 @@
                                     </el-submenu>
 
                                     <el-submenu index="comment" class="acc-navi-css">
-                                        <i class="el-icon-chat-line-square" slot="title"></i><span slot="title">我的评论</span>
+                                        <i class="el-icon-s-opportunity" slot="title"></i><span slot="title">互动足迹</span>
 
-                                        <el-menu-item index="commentList" class="acc-navi-css"><i class="el-icon-chat-round"></i>全部评论</el-menu-item>
+                                        <el-menu-item index="userComment" class="acc-navi-css"><i class="el-icon-chat-line-square"></i>我的评论</el-menu-item>
+                                        <!--
                                         <el-menu-item index="commentSetting" class="acc-navi-css"><i class="el-icon-set-up"></i>评论设置</el-menu-item>
+                                        -->
 
 
                                     </el-submenu>
@@ -53,7 +55,7 @@
 
             <el-footer>
                 <div class="container-copyright">
-                    <span>Copyright &copy; 2021 Project ONESEC / Sylpha Project Co., Ltd. All Rights Reserved.</span>
+                    <span>{{ $store.state.copyright }}</span>
                 </div>
             </el-footer>
         </el-container>

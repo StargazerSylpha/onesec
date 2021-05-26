@@ -5,6 +5,7 @@ Vue.use(VueRouter)
 //若出现大小写敏感错误，需要完全删除敏感的一行，然后重新填写
 //直接修改错误的字幕似乎没用
 //router name必写！关系到公共组件菜单的条目高亮！反而vue组件内的name没那么重要了
+//当然，不一定非得是name字段，你写个menuTitle字段，然后在navi里设置一下，也能高亮，不过懒得改了
 
 const routes = [
   {
@@ -47,6 +48,11 @@ const routes = [
         name: 'changePassword',
         component: () => import("../views/ChangePassword"),
       },
+      {
+        path: "userComment",
+        name: "userComment",
+        component: () => import("../views/UserComment")
+      }
     ],
   },
   {
@@ -57,7 +63,7 @@ const routes = [
     children: [
       {
         path: 'home',
-        name: 'newsHome',
+        name: 'home',
         component: () => import("../views/NewsHome"),
       },
       {
@@ -104,6 +110,16 @@ const routes = [
         path:"articleList",
         name: "articleList",
         component: () => import("../views/ArticleList")
+      },
+      {
+        path:"trendingList",
+        name: "trendingList",
+        component: () => import("../views/TrendingList")
+      },
+      {
+        path: "commentList",
+        name: "commentList",
+        component: () => import("../views/CommentList")
       }
     ]
   },

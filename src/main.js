@@ -6,7 +6,6 @@ import store from './store'
 import './plugins/element.js'
 import './assets/style.css'
 import './assets/function.js'
-import "./assets/ckeditor"
 
 Vue.config.productionTip = false
 

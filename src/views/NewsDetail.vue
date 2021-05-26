@@ -31,7 +31,7 @@
                     </div>
 
                     <div id="news-detail-comment" class="news-detail">
-                        <NewsComment></NewsComment>
+                        <NewsComment :article="$route.params.articleId"></NewsComment>
                     </div>
 
                 </div>
@@ -41,22 +41,14 @@
                 <div id="news-home-right">
 
                     <div id="news-home-right-top-search">
-                        <el-input placeholder="请输入要搜索的关键词" v-model="searchKeyword"  prefix-icon="el-icon-search" clearable>
-                            <el-button slot="append" >搜 索</el-button>
-                        </el-input>
+                        <SearchWidget></SearchWidget>
                     </div>
 
                     <div id="news-home-right-mid-user" class="news-home-right-compo">
                         <UserInfo></UserInfo>
                     </div>
                     <div id="news-home-right-bottom-news" class="news-home-right-compo">
-                        <div id="news-home-right-bottom-news-title" class="function-title">推荐阅读</div>
-                        <div id="news-home-right-bottom-news-list">
-                            <ul>
-                                <li>1.balabalabala</li>
-                                <li>2.balabalabala</li>
-                            </ul>
-                        </div>
+                        <TrendingWidget></TrendingWidget>
                     </div>
 
                 </div>
@@ -79,7 +71,9 @@ export default {
     components: {
         UserInfo: () => import("../components/UserInfo"),
         NewsShare: () => import("../components/NewsShare"),
-        NewsComment: () => import("../components/NewsComment")
+        NewsComment: () => import("../components/NewsComment"),
+        TrendingWidget: () => import("../components/TrendingWidget"),
+        SearchWidget: () => import("../components/SearchWidget")
     },
     mounted() {
         let _articleId = this.$route.params.articleId;
@@ -101,12 +95,14 @@ export default {
                 this.articleDetail.id = response.data.data.id;
                 this.articleDetail.banner = response.data.data.banner;
                 this.articleDetail.author = response.data.data.author;
+                document.title = this.articleDetail.title + ' - 新闻 - ' + store.state.pageTitle;
 
             } else {
                 this.$message({
                     type: "error",
                     message: "[" + response.data.errcode + "]" + response.data.msg,
                 });
+                this.articleDetail.content = "[" + response.data.errcode + "]" + response.data.msg;
 
             }
         }).catch(error => {
@@ -114,10 +110,11 @@ export default {
                 type: "error",
                 message: "[" + error.response.data.errcode + "]" + error.response.data.msg,
             });
+            this.articleDetail.content = "[" + error.response.data.errcode + "]" + error.response.data.msg;
         });
 
 
-        document.title = '登录' + ' - 新闻 - ' + store.state.pageTitle;
+
     },
     data() {
         return {
@@ -180,6 +177,8 @@ export default {
 
 .news-detail-content {
     margin-top: 20px;
+    /*给vue用于辨认\r \n*/
+    white-space: pre-wrap;
 }
 
 #news-detail-share {

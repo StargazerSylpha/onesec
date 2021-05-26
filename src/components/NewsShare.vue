@@ -2,7 +2,8 @@
     <div id="news-share-component">
         <el-row>
             <el-col style="width: 40px;">
-                <div class="author-avatar"><img @click="toUserDetail" class="news-share-avatar-border" width="40" height="40" :src="article.authorAvatar"></div>
+                <div class="author-avatar"><img @click="toUserDetail" class="news-share-avatar-border" width="40" height="40"
+                                                :src="article.authorAvatar" :onerror="defaultAvatar"></div>
             </el-col>
             <el-col id="author-nickname-col">
                 <div><span @click="toUserDetail">{{article.authorNickname}}</span></div>
@@ -75,9 +76,12 @@
 </template>
 
 <script>
+import store from "../store";
+const defaultAvatar = "//arraycats-1253302621.cos.ap-shanghai.myqcloud.com/img/akalin.jpg";
 export default {
     name: "NewsShare",
     props:["article"],
+    store,
     methods: {
         backTop: function () {
             document.documentElement.scrollTop = 0;
@@ -100,7 +104,7 @@ export default {
 
     data: function () {
         return {
-
+            defaultAvatar: 'this.src = "' + store.state.defaultAvatar + '"',
 
         }
     },
