@@ -46,9 +46,10 @@
                         <el-table-column prop="banner" width="200" label="横幅URL" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="publishDate" width="160" label="发布日期" sortable></el-table-column>
                         <!--表格隐藏列仅接受v-if和v-show，不接受display和visibility 不过这样也好 v-if连源代码都不会显示-->
-                        <el-table-column label="操作" fixed="right">
+                        <el-table-column label="操作" width="220" fixed="right">
                             <template slot-scope="scope">
                                 <el-button type="text" @click="toEditArticle(scope.row.id)">编辑</el-button>
+                                <el-button type="text" @click="addArticleToTrending(scope.row.title,scope.row.id,scope.row.banner)">添加至推荐位</el-button>
                                 <el-button type="text" @click="deleteArticle(scope.row.id,scope.row.title)">删除</el-button>
                             </template>
                         </el-table-column>
@@ -89,6 +90,42 @@ export default {
         this.getArticleList();
     },
     methods: {
+        addArticleToTrending(_title,_articleId,_banner) {
+            this.$confirm("请确认是否要将文章添加到推荐位：[" + _articleId+ "]" + _title ,"添加至推荐位",{
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+            }).then(() => {
+                let accessToken = localStorage.getItem("accessToken");
+                let postData = {
+                    "title":_title,
+                    "itemindex":100,//默认都是100，添加到列最前，自己去调吧
+                    "link":"/#/news/detail/" + _articleId,
+                    "banner": _banner
+                }
+
+                axios.post(store.state.apiUrl + "/api/trending/addTrending?accessToken=" + accessToken,postData).then(response => {
+                    if(response.status === 200) {
+                        if(response.data.errcode === 0) {
+                            this.$message({
+                                type:"success",
+                                message: "添加成功！",
+                            });
+
+                        } else if(response.data.errcode === 1001) {
+                            autoLogout();
+                        } else {
+                            this.$message({
+                                type: "error",
+                                message: "[" + response.data.errcode + "]" + response.data.msg,
+                            });
+                            this.addTrendingForm.submitBtnLoading = false;
+                        }
+                    }
+                });
+            });
+
+        },
         deleteArticle(_articleId,_articleTitle) {
             this.$confirm("请确认是否要删除文章：[" + _articleId+ "]" + _articleTitle ,"删除文章",{
                 confirmButtonText: "确认",

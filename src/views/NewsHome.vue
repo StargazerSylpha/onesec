@@ -88,6 +88,7 @@ export default {
     mounted() {
         this.getArticleList();
         this.getTrendingList();
+        document.title = "新闻 - " + store.state.pjtitle;
     },
     methods: {
         toTrending(_link) {
