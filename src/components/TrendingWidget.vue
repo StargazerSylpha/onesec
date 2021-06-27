@@ -36,7 +36,7 @@ export default {
             window.open(_link,"_blank");
         },
         getTrendingList() {
-            axios.get(store.state.apiUrl + "/api/trending/getTrendingList").then(response => {
+            axios.get(store.state.apiUrl + "/api/trending/getTrendingList?t=" + Math.random() ).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     let resultList = response.data.data;
                     let resultSize = resultList.length <= 5 ? resultList.length : 5;

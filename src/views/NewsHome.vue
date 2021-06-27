@@ -95,7 +95,7 @@ export default {
             window.open(_link,"_blank");
         },
         getTrendingList() {
-            axios.get(store.state.apiUrl + "/api/trending/getTrendingList?type=banner").then(response => {
+            axios.get(store.state.apiUrl + "/api/trending/getTrendingList?type=banner&t=" + Math.random()).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     let resultList = response.data.data;
                     for(let i = 0;i < resultList.length; i++) {
@@ -113,7 +113,7 @@ export default {
         },
         getArticleList: function() {
             this.loadingNotice = true;
-            axios.get(store.state.apiUrl + "/api/article/getArticleList", {params:{"page":this.page}}).then(response => {
+            axios.get(store.state.apiUrl + "/api/article/getArticleList?t=" + Math.random(), {params:{"page":this.page}}).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     this.newArticleList = response.data.data;
                     this.page ++;

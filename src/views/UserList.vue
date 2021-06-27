@@ -163,7 +163,7 @@ export default {
         getUserList() {
             this.getUserListLoading = true;
             let authData = "accessToken=" + localStorage.getItem("accessToken");
-            axios.post(store.state.apiUrl + "/api/user/getUserList",authData).then(response => {
+            axios.post(store.state.apiUrl + "/api/user/getUserList?t=" + Math.random(),authData).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     let resultList = response.data.data;
                     //js的对象for循环中间不是冒号，是in
@@ -272,7 +272,7 @@ export default {
                 return;
             }
 
-            axios.post(store.state.apiUrl + "/api/user/editUserInfo?accessToken=" + accessToken,postData).then(response => {
+            axios.post(store.state.apiUrl + "/api/user/editUserInfo?accessToken=" + accessToken + "&t=" + Math.random(),postData).then(response => {
                 if(response.status === 200) {
                     if(response.data.errcode === 0) {
                         this.$message({
@@ -314,7 +314,7 @@ export default {
 
             let accessToken = localStorage.getItem("accessToken");
             let postData = "accessToken=" + accessToken + "&uid=" + this.editUserForm.uid + "&password=" + this.editUserForm.password;
-            axios.post(store.state.apiUrl + "/api/user/editUserPassword",postData).then(response => {
+            axios.post(store.state.apiUrl + "/api/user/editUserPassword?t=" + Math.random(),postData).then(response => {
                 if(response.status === 200) {
                     if(response.data.errcode === 0) {
                         this.$message({
@@ -348,7 +348,7 @@ export default {
                 this.editUserForm.submitBtnLoading = true;
                 let accessToken = localStorage.getItem("accessToken");
                 let postData = "accessToken=" + accessToken + "&uid=" + this.editUserForm.uid;
-                axios.post(store.state.apiUrl + "/api/user/deleteUser",postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/user/deleteUser?t=" + Math.random(),postData).then(response => {
                     if(response.status === 200) {
                         if(response.data.errcode === 0) {
                             this.$message({

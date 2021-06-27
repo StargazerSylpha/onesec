@@ -110,7 +110,7 @@ export default {
                 type: "warning",
             }).then(() => {
                 let authData = "cid=" + _cid +  "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/comment/deleteComment",authData).then(response => {
+                axios.post(store.state.apiUrl + "/api/comment/deleteComment?t=" + Math.random(),authData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -164,7 +164,7 @@ export default {
 
             let page = (_pageId == null || typeof _pageId === "undefined" || _pageId < 1) ? 0 : _pageId;
 
-            axios.get(store.state.apiUrl + "/api/comment/getCommentList",{
+            axios.get(store.state.apiUrl + "/api/comment/getCommentList?t=" + Math.random(),{
                 params:{
                     page:_pageId
                 }

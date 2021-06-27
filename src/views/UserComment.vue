@@ -93,7 +93,7 @@ export default {
                 type: "warning",
             }).then(() => {
                 let authData = "cid=" + _cid +  "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/comment/userDeleteComment",authData).then(response => {
+                axios.post(store.state.apiUrl + "/api/comment/userDeleteComment?t=" + Math.random(),authData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -129,7 +129,7 @@ export default {
 
             let page = (_pageId == null || typeof _pageId === "undefined" || _pageId < 1) ? 0 : _pageId;
             let postData = "page=" + page + "&accessToken=" + localStorage.getItem("accessToken");
-            axios.post(store.state.apiUrl + "/api/comment/getUserComment",postData).then(response => {
+            axios.post(store.state.apiUrl + "/api/comment/getUserComment?t=" + Math.random(),postData).then(response => {
                 if(response.data.errcode === 0) {
                     let resultList = response.data.data;
                     this.getUserCommentForm.total = response.data.size;

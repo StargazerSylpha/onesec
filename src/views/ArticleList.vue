@@ -104,7 +104,7 @@ export default {
                     "banner": _banner
                 }
 
-                axios.post(store.state.apiUrl + "/api/trending/addTrending?accessToken=" + accessToken,postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/trending/addTrending?accessToken=" + accessToken + "&t=" + Math.random(),postData).then(response => {
                     if(response.status === 200) {
                         if(response.data.errcode === 0) {
                             this.$message({
@@ -133,7 +133,7 @@ export default {
                 type: "warning",
             }).then(() => {
                 let authData = "id=" + _articleId +  "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/article/deleteArticle",authData).then(response => {
+                axios.post(store.state.apiUrl + "/api/article/deleteArticle?t=" + Math.random(),authData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -183,7 +183,7 @@ export default {
 
             let page = (_pageId == null || typeof _pageId === "undefined" || _pageId < 1) ? 0 : _pageId;
 
-            axios.get(store.state.apiUrl + "/api/article/getArticleList?page=" + page).then(response => {
+            axios.get(store.state.apiUrl + "/api/article/getArticleList?page=" + page + "&t=" + Math.random()).then(response => {
                 if(response.data.errcode === 0) {
                     let resultList = response.data.data;
                     this.getArticleListForm.total = response.data.size;
@@ -228,7 +228,7 @@ export default {
             }
             //2.表格白圈圈启动
             this.getArticleListLoading = true;
-            axios.get(store.state.apiUrl + "/api/article/articleSearch", {
+            axios.get(store.state.apiUrl + "/api/article/articleSearch?t=" + Math.random(), {
                 params:{
                     "page":page,
                     "keyword": this.articleSearchForm.searchKeyword,

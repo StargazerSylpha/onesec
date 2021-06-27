@@ -74,7 +74,7 @@ export default {
     methods: {
         getArticleList: function() {
             this.loadingNotice = true;
-            axios.get(store.state.apiUrl + "/api/article/getArticleList", {
+            axios.get(store.state.apiUrl + "/api/article/getArticleList?t=" + Math.random(), {
                 params:{
                     category: this.category,
                     "page":this.page

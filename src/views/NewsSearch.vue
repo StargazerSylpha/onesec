@@ -75,7 +75,7 @@ export default {
         articleSearch: function() {
             this.getArticleSearchResultForm.loadingNotice = true;
 
-            axios.get(store.state.apiUrl + "/api/article/articleSearch", {
+            axios.get(store.state.apiUrl + "/api/article/articleSearch?t=" + Math.random(), {
                 params:{
                     "page":this.getArticleSearchResultForm.page,
                     "keyword": this.getArticleSearchResultForm.keyword,

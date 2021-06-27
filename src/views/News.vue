@@ -74,7 +74,7 @@ export default {
             }
         },
         getCategoryList() {
-            axios.get(store.state.apiUrl + "/api/category/getCategoryList").then(response => {
+            axios.get(store.state.apiUrl + "/api/category/getCategoryList?t=" + Math.random()).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     this.categoryList = response.data.data;
 

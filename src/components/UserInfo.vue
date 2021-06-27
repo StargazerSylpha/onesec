@@ -44,7 +44,7 @@ export default {
     },
     mounted() {
         let authData = "accessToken=" + localStorage.getItem("accessToken");
-        axios.post(store.state.apiUrl + "/api/user/getUserInfo",authData).then(response => {
+        axios.post(store.state.apiUrl + "/api/user/getUserInfo?t=" + Math.random(),authData).then(response => {
             if(response.status === 200 && response.data.errcode === 0) {
                 this.user.isLogin = true;
                 this.user.nickname = response.data.data.nickname;

@@ -121,7 +121,7 @@ export default {
          */
 
         let authData = "accessToken=" + localStorage.getItem("accessToken");
-        axios.post(store.state.apiUrl + "/api/user/getUserInfo",authData).then(response => {
+        axios.post(store.state.apiUrl + "/api/user/getUserInfo?t=" + Math.random(),authData).then(response => {
             if(response.status === 200 && response.data.errcode === 0) {
                 if(response.data.data.usertype === 1) {
                     this.contentDisplay = true;

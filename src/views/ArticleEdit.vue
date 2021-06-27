@@ -76,7 +76,7 @@ export default {
                 this.$router.push("articleEdit");
                 window.location.reload();
             } else {
-                axios.get(store.state.apiUrl + "/api/article/getArticle", {params:{"id":articleId}}).then(response => {
+                axios.get(store.state.apiUrl + "/api/article/getArticle?t=" + Math.random(), {params:{"id":articleId}}).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.changeFlag = true;
                         this.articleEditForm.title = response.data.data.title;
@@ -173,7 +173,7 @@ export default {
                 });
                 this.articleEditForm.submitBtnLoading = false;
             } else{
-                axios.post(store.state.apiUrl + "/api/article/editArticle?accessToken=" + localStorage.getItem("accessToken"),postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/article/editArticle?accessToken=" + localStorage.getItem("accessToken") + "&t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -228,7 +228,7 @@ export default {
                 });
                 this.articleEditForm.submitBtnLoading = false;
             } else{
-                axios.post(store.state.apiUrl + "/api/article/addArticle?accessToken=" + localStorage.getItem("accessToken"),postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/article/addArticle?accessToken=" + localStorage.getItem("accessToken") + "&t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -272,7 +272,7 @@ export default {
             this.editor = null;
         },
         getCategoryList() {
-            axios.get(store.state.apiUrl + "/api/category/getCategoryList").then(response => {
+            axios.get(store.state.apiUrl + "/api/category/getCategoryList?t=" + Math.random()).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     this.articleEditForm.categoryList = response.data.data;
                     this.articleEditForm.categoryDisabled = false;

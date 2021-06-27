@@ -120,7 +120,7 @@ export default {
     mounted: function (url, config) {
         document.title = '修改资料' + ' - ' + store.state.pageTitle
         let authData = "accessToken=" + localStorage.getItem("accessToken");
-        axios.post(store.state.apiUrl + "/api/user/getUserInfo",authData).then(response => {
+        axios.post(store.state.apiUrl + "/api/user/getUserInfo?t=" + Math.random(),authData).then(response => {
             if(response.status === 200 && response.data.errcode === 0) {
                 this.userInfo.uid = response.data.data.uid;
                 this.userInfo.username = response.data.data.username;
@@ -171,7 +171,7 @@ export default {
                 this.submitBtn.loading = false;
             } else if(sex != null) {
                 let postData = "nickname=" + nickname + "&sex=" + sex + "&birthday=" + birthday + "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/user/changeInfo",postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/user/changeInfo?t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",

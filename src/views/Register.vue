@@ -107,7 +107,7 @@ export default {
                         let postData = "username=" + this.regForm.username
                             + "&password=" + this.regForm.password
                             + "&email=" + this.regForm.email;
-                        axios.post(store.state.apiUrl + "/api/auth/register",postData).then(response => {
+                        axios.post(store.state.apiUrl + "/api/auth/register?t=" + Math.random(),postData).then(response => {
                             if(response.status === 200 && response.data.errcode === 0) {
                                 this.$message({
                                     type: "success",

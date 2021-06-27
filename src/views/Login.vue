@@ -93,7 +93,7 @@ export default {
             if(this.loginForm.username.length >= 6 && this.loginForm.username.length <= 20 &&
                 this.loginForm.password.length >= 8 && this.loginForm.password.length <= 20) {
                 let loginData = "username=" + this.loginForm.username + "&password=" + this.loginForm.password;
-                axios.post(store.state.apiUrl + "/api/auth/login",loginData).then(response =>  {
+                axios.post(store.state.apiUrl + "/api/auth/login?t=" + Math.random(),loginData).then(response =>  {
                     if(response.status === 200 && response.data.errcode === 0) {
                         /**
                          * 设置localstorage，方便account.vue等组件读取展示用户信息

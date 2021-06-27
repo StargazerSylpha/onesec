@@ -100,7 +100,7 @@ export default {
     mounted: function () {
         document.title = '修改密码' + ' - ' + store.state.pageTitle;
         let authData = "accessToken=" + localStorage.getItem("accessToken");
-        axios.post(store.state.apiUrl + "/api/user/getUserInfo",authData).then(response => {
+        axios.post(store.state.apiUrl + "/api/user/getUserInfo?t=" + Math.random(),authData).then(response => {
             if(response.status === 200 && response.data.errcode === 0) {
                 //...
             } else if(response.data.errcode === 1001) {
@@ -160,7 +160,7 @@ export default {
             } else {
                 let postData = "accessToken=" + localStorage.getItem("accessToken") +
                                 "&oldpassword=" + oldPwd + "&newpassword=" + newPwd;
-                axios.post(store.state.apiUrl + "/api/user/changePassword",postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/user/changePassword?t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         autoLogout("success","密码修改成功！请重新登录");
                     } else if(response.data.errcode === 1001) {

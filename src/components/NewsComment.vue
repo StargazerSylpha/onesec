@@ -81,7 +81,7 @@ export default {
                 });
                 this.addCommentForm.submitBtnLoading = false;
             } else {
-                axios.post(store.state.apiUrl + "/api/comment/addComment?accessToken=" + localStorage.getItem("accessToken"),postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/comment/addComment?accessToken=" + localStorage.getItem("accessToken") + "&t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -119,7 +119,7 @@ export default {
             this.getCommentListForm.notice = "评论加载中，请稍后...";
             let page = (_pageId == null || typeof _pageId === "undefined" || _pageId < 1) ? 0 : _pageId;
 
-            axios.get(store.state.apiUrl + "/api/comment/getCommentList",{
+            axios.get(store.state.apiUrl + "/api/comment/getCommentList?t=" + Math.random(),{
                 params:{
                     article:this.article,
                     page:_pageId

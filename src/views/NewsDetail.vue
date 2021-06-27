@@ -78,7 +78,7 @@ export default {
     mounted() {
         let _articleId = this.$route.params.articleId;
 
-        axios.get(store.state.apiUrl + "/api/article/getArticle", {params:{"id":_articleId}}).then(response => {
+        axios.get(store.state.apiUrl + "/api/article/getArticle?t=" + Math.random(), {params:{"id":_articleId}}).then(response => {
             if(response.status === 200 && response.data.errcode === 0) {
                 this.articleDetail.publishDate = dateFormatter(response.data.data.publishDate,true);
                 this.articleDetail.category = response.data.data.category;

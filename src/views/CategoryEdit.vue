@@ -149,7 +149,7 @@ export default {
                 this.editCategoryForm.submitBtnLoading = false;
             } else {
                 let postData = "catid=" + catid + "&catname=" + catname + "&catindex=" + catindex + "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/category/editCategory",postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/category/editCategory?t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -179,7 +179,7 @@ export default {
                 type: "warning",
             }).then(() => {
                 let authData = "catid=" + _catId + "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/category/deleteCategory",authData).then(response => {
+                axios.post(store.state.apiUrl + "/api/category/deleteCategory?t=" + Math.random(),authData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -202,7 +202,7 @@ export default {
         },
         getCategoryList() {
             this.getCategoryListLoading = true;
-            axios.get(store.state.apiUrl + "/api/category/getCategoryList").then(response => {
+            axios.get(store.state.apiUrl + "/api/category/getCategoryList?t=" + Math.random()).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     this.categoryList = response.data.data;
                     this.getCategoryListLoading = false;
@@ -243,7 +243,7 @@ export default {
                 this.newCategoryForm.submitBtnLoading = false;
             } else {
                 let postData = "catname=" + newCatName + "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/category/addCategory",postData).then(response => {
+                axios.post(store.state.apiUrl + "/api/category/addCategory?t=" + Math.random(),postData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",

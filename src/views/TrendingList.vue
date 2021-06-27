@@ -228,7 +228,7 @@ export default {
                 return;
             }
 
-            axios.post(store.state.apiUrl + "/api/trending/addTrending?accessToken=" + accessToken,postData).then(response => {
+            axios.post(store.state.apiUrl + "/api/trending/addTrending?accessToken=" + accessToken + "&t=" + Math.random(),postData).then(response => {
                 if(response.status === 200) {
                     if(response.data.errcode === 0) {
                         this.$message({
@@ -258,7 +258,7 @@ export default {
                 type: "warning",
             }).then(() => {
                 let authData = "id=" + _id + "&accessToken=" + localStorage.getItem("accessToken");
-                axios.post(store.state.apiUrl + "/api/trending/deleteTrending",authData).then(response => {
+                axios.post(store.state.apiUrl + "/api/trending/deleteTrending?t=" + Math.random(),authData).then(response => {
                     if(response.status === 200 && response.data.errcode === 0) {
                         this.$message({
                             type:"success",
@@ -316,7 +316,7 @@ export default {
                 return;
             }
 
-            axios.post(store.state.apiUrl + "/api/trending/editTrending?accessToken=" + accessToken,postData).then(response => {
+            axios.post(store.state.apiUrl + "/api/trending/editTrending?accessToken=" + accessToken + "&t=" + Math.random(),postData).then(response => {
                 if(response.status === 200) {
                     if(response.data.errcode === 0) {
                         this.$message({
@@ -373,7 +373,7 @@ export default {
         },
         getTrendingList() {
             this.getTrendingListLoading = true;
-            axios.get(store.state.apiUrl + "/api/trending/getTrendingList").then(response => {
+            axios.get(store.state.apiUrl + "/api/trending/getTrendingList?t=" + Math.random()).then(response => {
                 if(response.status === 200 && response.data.errcode === 0) {
                     let resultList = response.data.data;
                     for(let i = 0;i < resultList.length; i++) {

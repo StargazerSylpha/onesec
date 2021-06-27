@@ -12,7 +12,7 @@ export default new Vuex.Store({
         defaultAvatar: "//arraycats-1253302621.cos.ap-shanghai.myqcloud.com/img/akalin.jpg",
         defaultBanner: "//arraycats-1253302621.cos.ap-shanghai.myqcloud.com/img/newsimg.jpg",
         copyright:"Copyright © 2021 Project ONESEC / Sylpha Project Co., Ltd. All Rights Reserved.",
-        version: "Ver. 1.0（ver. 0.5_preview）",
+        version: "Ver.1.1（Ver.0.6_preview）",
 
     },
     mutations: {
