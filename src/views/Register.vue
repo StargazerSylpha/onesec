@@ -124,6 +124,9 @@ export default {
                             }
                         })
                     }
+                } else {
+                    // 什么信息都不填，点提交，虽然会验证表单，但提交按钮无法恢复可点击状态
+                    this.regBtnLoading = false;
                 }
             })
         },
