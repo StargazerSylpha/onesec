@@ -2,7 +2,7 @@
 
 ## 更新历史
 
-### Ver. 1.1.1（Ver. 0.6.1_preview） [2021-06-28]
+### Ver. 1.1.1（Ver. 0.6.1_preview） [2021-07-07]
 解决注册界面空数据提交，执行完formRulesCheck后注册按钮未恢复可点击的问题
 ### Ver. 1.1（Ver. 0.6_preview）[2021-06-28]
 api请求cache问题debug
